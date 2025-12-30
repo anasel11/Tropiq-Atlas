@@ -1,0 +1,230 @@
+/* ...existing code... */
+
+:root{
+  --bg:#fafafa;
+  --card:#fff;
+  --accent:#2b6cff;
+  --muted:#666;
+  --radius:10px;
+  --gap:16px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+body{
+  background:var(--bg);
+  color:#111;
+  padding:24px;
+  display:flex;
+  justify-content:center;
+}
+
+main, .container{width:100%;max-width:1100px}
+
+/* Header / logo */
+.site-header{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:72px;                /* hauteur de la barre */
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+  background: rgba(255, 135, 135, 0.555);
+  backdrop-filter: blur(6px); /* optionnel : flou derrière la barre */
+  box-shadow: 0 6px 18px rgba(15,15,15,0.06);
+  padding:0;                  /* hauteur contrôlée par `height` */
+}
+#logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:0;
+  width:100%;
+  max-width:1100px;
+  padding:0 20px;
+  height:100%;                /* centrer verticalement */
+}
+
+.go{
+  font-size:1rem;
+  font-weight:600;
+  margin-left:auto;
+  color:rgb(165, 255, 180);
+  user-select:none;
+  text-shadow: 0 0px 10px rgb(51, 255, 0);
+}
+
+.outzki{
+  height:48px;
+  width:48px;
+  object-fit:cover;
+  border-radius:8px;
+  margin-bottom: 10px;
+}
+
+#logo img{
+  height:64px;
+  width:64px;
+  object-fit:cover;
+  border-radius:8px;
+}
+.site-title h1{ font-size:1.4rem; margin:0; }
+.site-title p{ margin:0; color:var(--muted); font-size:0.95rem; }
+
+/* Image buttons grid */
+.img-buttons{
+  position:fixed;
+  inset:0;
+  display:flex;
+  z-index:0;
+  pointer-events:auto;
+  height:100vh;
+  margin:0;
+  background:transparent;
+}
+
+/* Each image button */
+.img-button{
+  flex:1 1 33.333%;
+  width:33.333%;
+  height:100%;
+  border-radius:0;
+  overflow:hidden;
+  box-shadow:none;
+
+  /* keep container relative so image can be absolute (background-like) */
+  position:relative;
+  cursor:pointer;
+  pointer-events:auto;
+  transition: transform .25s ease, box-shadow .25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.site-title{
+  color: #fff;
+}
+
+.site-title p{
+  color: #fff;
+}
+
+/* make the <img> behave like a background */
+.img-button img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  filter:brightness(.55); /* assombrit pour le texte */
+  transform:scale(1.02);
+  transition: transform .6s ease, filter .25s ease;
+  pointer-events:none; /* laisse l'anchor recevoir les clics */
+  z-index:1;
+}
+
+/* overlay label that appears on hover/focus */
+.img-button span{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  padding:14px;
+  font-weight:700;
+  color:#fff;
+  background:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0.65) 100%);
+  transform:translateY(12px);
+  opacity:0;
+  transition: transform .22s ease, opacity .22s ease;
+  text-align:center;
+  z-index:4; /* au-dessus de l'image */
+}
+
+/* subtle overlay for better contrast */
+.img-button::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.18));
+  opacity:0;
+  transition: opacity .22s ease;
+  z-index:2;
+}
+
+/* ensure page content stays above background images */
+main, .container, #logo, .page-content {
+  position:relative;
+  z-index:5;
+}
+
+/* allow clicks to pass through the page content to the background image buttons */
+.page-content{
+  position:relative;
+  z-index:5;
+  pointer-events:none;    /* le texte ne bloque plus les clics */
+  user-select:text;       /* le texte reste sélectionnable */
+}
+
+/* par défaut, tous les descendants n'interceptent pas les clics */
+.page-content *{
+  pointer-events:none;
+}
+
+/* réactiver les interactions pour les éléments qui doivent rester cliquables */
+.page-content a,
+.page-content button,
+.page-content input,
+.page-content textarea,
+.page-content .keep-clickable{
+  pointer-events:auto;
+  z-index:6;
+}
+
+/* optionnel — si tu veux que certains liens restent visibles au-dessus */
+.page-content .keep-clickable{
+  position:relative;
+}
+
+/* Hover / focus effects to show interactivity */
+.img-button:hover,
+.img-button:focus,
+.img-button:focus-visible{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 18px 40px rgba(15,15,15,0.12);
+  z-index:6; /* bring hovered card above neighbors and content if needed */
+}
+.img-button:hover img,
+.img-button:focus img{
+  transform:scale(1.06);
+  filter:brightness(.5);
+}
+.img-button:hover::after,
+.img-button:focus::after{
+  opacity:1;
+}
+.img-button:hover span,
+.img-button:focus span{
+  transform:translateY(0);
+  opacity:1;
+}
+
+/* make anchors keyboard-accessible appearance */
+.img-button:active{
+  transform:translateY(-2px) scale(.997);
+}
+
+/* Responsive adjustments */
+@media (max-width:900px){
+  .img-button{width:30%}
+  .img-button img{height:140px}
+}
+@media (max-width:640px){
+  body{padding:16px}
+  #logo{flex-direction:column;align-items:flex-start;gap:6px}
+  .img-buttons{flex-direction:column;gap:12px;height:300vh}
+  .img-button{width:100%; height:100vh; flex-basis:100%}
+  .img-button img{height:100vh}
+}
